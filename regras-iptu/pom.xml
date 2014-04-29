@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.cvarga</groupId>
+  <artifactId>regrasIPTU</artifactId>
+  <version>0.0.1</version>  
+  <name>Consumidor de regras do calculo de IPTU</name>
+  <description>Pacote de consumo das regras IPTU via maven e CDI</description>
+
+  <properties>
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
+    <!-- Define the version of the JBoss BOMs we want to import to specify 
+        tested stacks. -->
+    <version.jboss.bom.eap>6.2.0-redhat-1</version.jboss.bom.eap>
+    <version.drools>6.0.1.Final</version.drools>
+	
+  </properties>
+
+  <dependencyManagement>
+      <dependencies>            
+			<dependency>
+			    <groupId>org.jboss.bom.eap</groupId>
+			    <artifactId>jboss-javaee-6.0-with-tools</artifactId>
+			    <version>${version.jboss.bom.eap}</version>
+			    <type>pom</type>
+			    <scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.bom.eap</groupId>
+				<artifactId>jboss-javaee-6.0-with-logging</artifactId>
+				<version>${version.jboss.bom.eap}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>    
+      </dependencies>
+  </dependencyManagement>
+
+  <dependencies>    
+    
+	<dependency>
+		<groupId>org.drools</groupId>
+		<artifactId>drools-compiler</artifactId>
+		<version>${version.drools}</version>
+	</dependency>
+
+	 
+	<dependency>
+		<groupId>org.kie</groupId>
+		<artifactId>kie-ci</artifactId>
+		<version>${version.drools}</version>
+	</dependency>
+
+    
+	<dependency>
+		<groupId>org.jboss.logging</groupId>
+		<artifactId>jboss-logging</artifactId>
+	</dependency>
+
+    <!-- Needed for running tests (you may also use TestNG) -->
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+    
+  <organization>
+  	<name>Tok Stok</name>
+  </organization>
+</project>

@@ -1,0 +1,131 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package ANO2014
+
+import java.math.BigDecimal
+import java.sql.Date
+import java.util.Calendar
+import java.util.Set
+import org.jboss.logging.Logger
+
+import org.cvarga.entidades.IPTU;
+
+global org.jboss.logging.Logger logger;  
+
+
+rule "RegraDescontoClasseABC"  
+dialect "mvel" 
+no-loop 
+when
+    iptu : IPTU(valorVenal >= 97587.00f && valorVenal < 195175.00f && metrosQuadrado < 300 ) 
+    @Watch(valorVenal)
+then	
+	modify(iptu) {
+		setValorVenal(iptu.valorVenal - 39035.00f)
+	}
+end
+
+rule "RegraDescontoAte81792"  
+dialect "mvel" 
+when
+    iptu : IPTU(valorVenal <= 81792.00f && porcentagemValor == 0 )
+then	
+
+    modify( iptu ) {
+    setPorcentagemValor(-0.2f/100f)
+    } 
+end
+
+//Regra meramente "ilustrativa"
+rule "RegraDescontoDe81792Ate163525"  
+dialect "mvel" 
+when
+    iptu : IPTU(valorVenal > 81792.00f &&  valorVenal <= 163525.00f && porcentagemValor == 0 )
+then	
+
+    modify( iptu ) {
+    setPorcentagemValor(0.0f/100f)
+    } 
+end
+
+rule "RegraDescontoDe163525Ate327050"  
+dialect "mvel" 
+when
+    iptu : IPTU(valorVenal > 163525.00f && valorVenal <= 327050.00f && porcentagemValor == 0 )
+then	
+
+    modify( iptu ) {
+    setPorcentagemValor(0.2f/100f)
+    } 
+end
+
+rule "RegraDescontoDe327050Ate654100"  
+dialect "mvel" 
+when
+    iptu : IPTU(valorVenal > 327050.00f && valorVenal <= 654100.00f && porcentagemValor == 0 )
+then	
+
+    modify( iptu ) {
+    setPorcentagemValor(0.4f/100f)
+    } 
+end
+
+rule "RegraDescontoAcima654100"  
+dialect "mvel" 
+when
+    iptu : IPTU(valorVenal > 654100.00f && porcentagemValor == 0 )
+then	
+
+    modify( iptu ) {
+    setPorcentagemValor(0.6f/100f)
+    } 
+end
+
+
+rule "RegraValorImposto"  
+dialect "mvel" 
+when
+    iptu : IPTU(valorIPTU == 0)
+then	
+
+	iptu.porcentagemValor =  iptu.porcentagemValor + 1.0f/100f
+	iptu.valorIPTU = iptu.valorVenal * iptu.porcentagemValor 
+end
+
+
+
+/*
+function void calcRotProj(ProdutoRotacao produtoRotacao, Date dataFimProj,
+Set projecaoRotacao,Logger logger) {	
+    	
+	Date dateCorrente = produtoRotacao.getDT_INIC();
+	Calendar cal2 =  Calendar.getInstance();    	
+	    	
+	do {
+		
+		dateCorrente = new Date(cal2.getTimeInMillis());	
+		
+		DistribRotProj distribuicao = DistribRotProj.novaDistrib(produtoRotacao,dateCorrente);	
+		projecaoRotacao.add(distribuicao);
+		
+		//logger.info(distribuicao.getKey().toString());
+		
+		cal2.add(Calendar.DATE, 1);		
+		
+	} while (dateCorrente.getTime() <=dataFimProj.getTime());
+}
+*/
