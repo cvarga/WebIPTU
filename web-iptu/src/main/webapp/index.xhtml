@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    template="/WEB-INF/templates/default.xhtml">
+    <ui:define name="content">
+        <h1>Bem vindo ao cálulo de <strike>extorsão</strike> IPTU da prefeitura </h1>
+
+        <div>
+            <p>Cálculo do IPTU residencial </p>
+        </div>
+        
+ 		<form action="http://127.0.0.1:8080/fw-iptu/rest/residencial/" id="searchForm">
+            <input type="text" name="metrosQuadrados" placeholder="Quantos metros quadrados ?" />
+            <input type="text" name="valorVenal" placeholder="Qual o valor de venda ? " />
+            <input type="text" name="ano" placeholder="Ano do cálculo ? " />
+            <input type="submit" value="Calcular" />
+        </form>
+        <!-- the result of the search will be rendered inside this div -->
+        <div id="result"></div>
+        <script>
+            /* attach a submit handler to the form */
+            $("#searchForm").submit(function(event) {
+
+                /* stop form from submitting normally */
+                event.preventDefault();
+
+                /* get some values from elements on the page: */
+                var $form = $(this),
+                    term =  $form.find('input[name="ano"]').val() + '/' +  $form.find('input[name="valorVenal"]').val() + '/' + 
+                    $form.find('input[name="metrosQuadrados"]').val() ,
+                    url = $form.attr('action') + term;
+
+                /* Send the data using post */
+                var posting = $.get(url);
+
+                /* Put the results in a div */
+                posting.done(function(data) {
+                	  //var obj = $.parseJSON(data);
+                	  //$.each(obj, function() {
+                	  //    valorVenal += this['valorVenal'] + "<br/>";
+                	  //});
+                	  //$('span').html(valorVenal);
+                	  //var content = $(data).find('#valorVenal');
+                	//alert( data.name === "valorVenal" )
+                	var lang = '';
+                	lang += data.valorVenal + "<br/>"
+                	lang += data.valorIPTU + "<br/>"
+                	//$('span').html(data.valorVenal);
+                	$('span').html(lang);
+                	alert('Valor do IPTU é de: ' + data.valorIPTU  )
+                    //alert(data.valorVenal);
+                    //var content = $(data).find('#content');
+                    //$("#result").empty().append(valorVenal);
+                });
+            });
+        </script>
+
+
+    </ui:define>
+</ui:composition>
